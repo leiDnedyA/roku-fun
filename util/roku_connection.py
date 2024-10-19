@@ -1,4 +1,5 @@
 import socket
+import requests
 
 def scan_roku_ip() -> str:
     request_host =  "239.255.255.250"
@@ -18,9 +19,15 @@ def scan_roku_ip() -> str:
 
     for line in response_decoded.split('\n'):
         if line.startswith('LOCATION'):
-            device_ip = line.split(': ')[1]
+            device_ip = line.split(': ')[1][:-1] # removes the newline char from the end
             print(device_ip)
             return device_ip
     
     raise Exception("There was a problem finding the roku device on your network.")
+
+def test_connection(roku_ip: str) -> bool:
+    ping_url = f'{roku_ip}query/device-info'
+    r = requests.get(ping_url)
+    return r.ok
+
 
