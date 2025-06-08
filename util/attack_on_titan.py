@@ -8,8 +8,13 @@ def launch_attach_on_titan(roku_ip: str, debug=False):
     print("Launching attack on titan >:)")
     launch_disney_plus(roku_ip)
     time.sleep(DISNEY_PLUS_START_TIME_SECONDS) # It takes a while for disney plus to launch
+    # disney_plus_state = get_disney_plus_channel_state(roku_ip)
+    # if disney_plus_state == "inactive": # Click on user
+    #     keypress(roku_ip, 'select')
+    #     if debug: print(-1)
+    #     time.sleep(KEY_DELAY_SECONDS * 5) 
     keypress(roku_ip, 'down')
-    if debug: print(1)
+    if debug: print(0)
     time.sleep(KEY_DELAY_SECONDS)
     keypress(roku_ip, 'left')
     if debug: print(2)

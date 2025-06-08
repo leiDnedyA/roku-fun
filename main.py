@@ -2,7 +2,7 @@ import argparse
 import requests
 from util.attack_on_titan import launch_attach_on_titan
 from util.roku_connection import scan_roku_ip, test_connection
-from util.roku_commands import keypress, launch_disney_plus
+from util.roku_commands import get_bitmaps, keypress, launch_disney_plus
 from flask import Flask, request, jsonify, render_template
 
 roku_ip = None

@@ -2,7 +2,7 @@ import argparse
 import requests
 from util.attack_on_titan import launch_attach_on_titan
 from util.roku_connection import scan_roku_ip, test_connection
-from util.roku_commands import keypress, launch_disney_plus
+from util.roku_commands import keypress, launch_disney_plus, launch_disney_plus_content
 
 def run_remote(roku_ip: str):
     key_names = ['home', 'rev', 'fwd', 'play', 'select', 'left', 'right', 'down', 'up', 'back', 'instantreplay', 'info', 'backspace', 'search', 'enter']
@@ -32,4 +32,4 @@ if __name__ == '__main__':
     if not connection_successful:
         print(f"ERROR: connection test failed. Attempted to connect to IP: \"{roku_ip}\"")
 
-    run_remote(roku_ip)
+    launch_disney_plus_content(roku_ip, '12271aec-bda3-4979-88a1-cb18cfd28901')
