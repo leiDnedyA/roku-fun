@@ -20,7 +20,7 @@ def scan_roku_ip() -> str:
     for line in response_decoded.split('\n'):
         if line.startswith('LOCATION'):
             device_ip = line.split(': ')[1][:-1] # removes the newline char from the end
-            print(device_ip)
+            # print(device_ip)
             return device_ip
     
     raise Exception("There was a problem finding the roku device on your network.")

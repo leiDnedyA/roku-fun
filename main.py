@@ -28,6 +28,41 @@ def recognize_speech_from_mic(recognizer, microphone):
 
     return response
 
+def launch_media_from_prompt(prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[system_prompt, {
+            "role": "user",
+            "content": prompt
+        }],
+        tools=tools
+    )
+
+    response_text = completion.choices[0].message.content
+    if response_text:
+        print(response_text)
+
+    tool_calls = completion.choices[0].message.tool_calls
+
+    roku_ip = scan_roku_ip()
+    if not test_connection(roku_ip):
+        print("Failed to connect to Roku. Check network and IP.")
+        return
+
+    if tool_calls:
+        for tool_call in tool_calls:
+            if tool_call.function.name == 'launch_media':
+                args = json.loads(tool_call.function.arguments)
+                media_name = args.get('media_name')
+                channel_name = args.get('channel_name').upper().strip()
+                deep_link_options = get_media_deep_link_options(media_name)
+                deep_link_data = next(filter(lambda option: option.get('channel_name').upper().strip() == channel_name,
+                                             deep_link_options), None)
+                if deep_link_data:
+                    print(f"Launching '{media_name}' on '{channel_name}'")
+                    launch_deep_link_from_obj(roku_ip, deep_link_data)
+
+
 def main():
     """
     # Initialize speech recognizer and microphone
@@ -49,51 +84,7 @@ def main():
     """
 
     raw_text = input("> ")
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[system_prompt, {
-            "role": "user",
-            "content": raw_text
-        }],
-        tools=tools
-    )
-
-    tool_calls = completion.choices[0].message.tool_calls
-    # print(tool_calls)
-
-    roku_ip = scan_roku_ip()
-    if not test_connection(roku_ip):
-        print("Failed to connect to Roku. Check network and IP.")
-        return
-
-    if tool_calls:
-        for tool_call in tool_calls:
-            if tool_call.function.name == 'launch_media':
-                args = json.loads(tool_call.function.arguments)
-                print(args)
-                media_name = args.get('media_name')
-                channel_name = args.get('channel_name').upper().strip()
-                deep_link_options = get_media_deep_link_options(media_name)
-                deep_link_data = next(filter(lambda option: option.get('channel_name').upper().strip() == channel_name,
-                                             deep_link_options), None)
-                if deep_link_data:
-                    print(f"Launching '{media_name}' on '{channel_name}'")
-                    launch_deep_link_from_obj(roku_ip, deep_link_data)
-
-
-
-    # print(f"Parsed show: {show_title}")
-    #
-    #
-    # deep_link_options = get_media_deep_link_options(show_title)
-    # deep_link_data = next(filter(lambda option: option.get('channel_name') == 'Disney Plus',
-    #                              deep_link_options), None)
-    #
-    # if deep_link_data:
-    #     print(f"Launching '{show_title}'")
-    #     launch_deep_link_from_obj(roku_ip, deep_link_data)
-    # else:
-    #     print(f"Could not find '{show_title}' on Disney+.")
+    launch_media_from_prompt(raw_text)
 
 
 if __name__ == "__main__":
