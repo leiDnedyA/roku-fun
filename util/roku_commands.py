@@ -24,6 +24,10 @@ def launch_disney_plus_content(roku_ip: str, content_id: str) -> bool:
     r = requests.post(f'{roku_ip}launch/{DISNEY_PLUS_CHANNEL_ID}?contentId={content_id}&MediaType=series')
     return r.ok
 
+def launch_deep_link(roku_ip: str, channel_id: str, content_id: str, media_type='series'):
+    r = requests.post(f'{roku_ip}launch/{channel_id}?contentId={content_id}&MediaType={media_type}')
+    return r.ok
+
 def get_bitmaps(roku_ip: str):
     r = requests.get(f'{roku_ip}query/r2d2-bitmaps')
     print(r.text)
