@@ -36,7 +36,7 @@ def get_media_deep_link_options(query: str):
                 "channel_id": option.get('channelId'),
                 "channel_name": option.get('channelName'),
                 "media_type": media_type,
-                "media_id": media_id
+                "content_id": option.get('playId')
             })
 
         return options
